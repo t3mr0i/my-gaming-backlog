@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { handleSubmit, auth } from "./firebase";
+import { handleRegistration, auth } from "./firebase";
 
 const RegisterForm = ({ onClose }) => {
   const [email, setEmail] = useState("");
@@ -18,7 +18,7 @@ const RegisterForm = ({ onClose }) => {
 
     // handle registration
     try {
-      const user = await handleSubmit(auth, email, password);
+      const user = await handleRegistration(auth, email, password);
       onClose();
     } catch (error) {
       console.error(error);

@@ -1,22 +1,14 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { collection, addDoc } from "firebase/firestore";
-import { db, auth } from "./firebase";
-
-const SearchGame = ({ onAddGame }) => {
+import { useState } from "react";
+import handler from "../api/searchGame";
+function SearchGame() {
   const [searchResults, setSearchResults] = useState([]);
-  const [gameTitle, setGameTitle] = useState(""); // Add this line
+  const [gameTitle, setGameTitle] = useState("");
 
-  const searchGame = async (e) => {
+  const searchGameHandler = async (e) => {
     e.preventDefault();
 
-    try {
-      const response = await fetch(`/api/searchGame?gameTitle=${gameTitle}`);
-      const data = await response.json();
-      setSearchResults(data.results);
-    } catch (error) {
-      console.error("Error fetching search results: ", error);
-    }
+    const results = await handler(gameTitle);
+    setSearchResults(results);
   };
 
   const addToBacklog = async (game) => {
@@ -34,12 +26,13 @@ const SearchGame = ({ onAddGame }) => {
       console.error("Error adding game to backlog: ", error);
     }
   };
+
   return (
-    <form onSubmit={searchGame} className="mb-6">
+    <form onSubmit={searchGameHandler} className="mb-6">
       <input
         type="text"
         value={gameTitle}
-        onChange={(e) => setGameTitle(e.target.value)} // Update this line
+        onChange={(e) => setGameTitle(e.target.value)}
         placeholder="Search for a game"
         className="border border-gray-300 p-2 rounded w-full"
       />
@@ -48,7 +41,7 @@ const SearchGame = ({ onAddGame }) => {
         {searchResults &&
           searchResults.map((result) => (
             <li key={result.id}>
-              {result.name} - {result.platform}
+              {result.name} -{""}- Metacritic: {result.metacritic} -{" "}
               <button onClick={() => addToBacklog(result)}>
                 Add to backlog
               </button>
@@ -57,6 +50,6 @@ const SearchGame = ({ onAddGame }) => {
       </ul>
     </form>
   );
-};
+}
 
 export default SearchGame;

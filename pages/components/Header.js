@@ -63,12 +63,7 @@ const Header = () => {
                 >
                   Register
                 </button>
-                <button
-                  onClick={handleLoginButtonClick}
-                  className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-300 font-sans"
-                >
-                  Login
-                </button>
+                <button onClick={handleLoginButtonClick}>Login</button>
               </>
             )}
           </div>
