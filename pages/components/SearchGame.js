@@ -13,7 +13,7 @@ const SearchGame = ({ onAddGame }) => {
     try {
       const response = await fetch(`/api/searchGame?gameTitle=${gameTitle}`);
       const data = await response.json();
-      setSearchResults(data);
+      setSearchResults(data.results);
     } catch (error) {
       console.error("Error fetching search results: ", error);
     }
@@ -45,12 +45,15 @@ const SearchGame = ({ onAddGame }) => {
       />
 
       <ul>
-        {searchResults.map((result) => (
-          <li key={result.id}>
-            {result.name} - {result.platform}
-            <button onClick={() => addToBacklog(result)}>Add to backlog</button>
-          </li>
-        ))}
+        {searchResults &&
+          searchResults.map((result) => (
+            <li key={result.id}>
+              {result.name} - {result.platform}
+              <button onClick={() => addToBacklog(result)}>
+                Add to backlog
+              </button>
+            </li>
+          ))}
       </ul>
     </form>
   );

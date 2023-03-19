@@ -1,5 +1,9 @@
 import * as firebase from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -19,7 +23,7 @@ const app = firebase.initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const handleSubmit = async (auth, email, password) => {
+const handleRegistration = async (email, password) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -28,9 +32,23 @@ const handleSubmit = async (auth, email, password) => {
     );
     return userCredential.user;
   } catch (error) {
-    console.error("Error creating user: ", error);
+    console.error("Error registering user: ", error);
     return null;
   }
 };
 
-export { handleSubmit, db, auth };
+const handleLogin = async (email, password) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    return userCredential.user;
+  } catch (error) {
+    console.error("Error logging in: ", error);
+    return null;
+  }
+};
+
+export { handleRegistration, handleLogin, db, auth };
