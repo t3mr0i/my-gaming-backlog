@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react"; // Import useEffect
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { auth, db } from "./firebase"; // Import auth and db
 import StarRatings from "react-star-ratings";
 
 const GameCard = ({ game, onRemove }) => {
   const [rating, setRating] = useState(0);
-  const [similarGames, setSimilarGames] = useState([]); // Add a state to store similar games
+  const [similarGames, setSimilarGames] = useState([]);
 
   const changeRating = async (newRating) => {
     setRating(newRating);
@@ -15,7 +16,6 @@ const GameCard = ({ game, onRemove }) => {
         gameId: game.id,
         gameName: game.name,
         rating: newRating,
-        timestamp: firebase.firestore.Timestamp.fromDate(new Date()),
       };
 
       await db.collection("activities").add(activity);
@@ -28,36 +28,58 @@ const GameCard = ({ game, onRemove }) => {
         setSimilarGames([]);
       }
     }
+  }; // Add missing closing curly brace
 
-    // ...
-
-    return (
-      <div className="bg-white p-6 mb-6 rounded shadow">
-        {/* ... */}
-        {similarGames.length > 0 && (
-          <div>
-            <h4 className="text-lg font-semibold mt-6 mb-4">
-              Similar games you may like:
-            </h4>
-            <div className="grid grid-cols-2 gap-4">
-              {similarGames.map((similarGame) => (
-                <div
-                  key={similarGame.id}
-                  className="bg-gray-100 p-4 rounded shadow"
-                >
-                  <img
-                    src={similarGamecover}
-                    alt={similarGame.name}
-                    className="w-full h-32 object-cover mb-2 rounded"
-                  />
-                  <h5 className="text-lg font-semibold">{similarGame.name}</h5>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+  return (
+    <div className="bg-white p-6 mb-6 rounded shadow">
+      <img
+        src={game.cover}
+        alt={game.name}
+        className="w-full h-64 object-cover rounded mb-4"
+      />
+      <h2 className="text-xl font-semibold mb-2">{game.name}</h2>
+      <div className="mb-2">
+        <StarRatings
+          rating={rating}
+          starRatedColor="#fca728"
+          starHoverColor="#fca728"
+          changeRating={changeRating}
+          numberOfStars={5}
+          name={game.id}
+          starDimension="20px"
+          starSpacing="2px"
+        />
       </div>
-    );
-  };
+      <button
+        className="bg-red-500 text-white rounded py-2 px-4"
+        onClick={() => onRemove(game)}
+      >
+        Remove from backlog
+      </button>
+      {similarGames.length > 0 && (
+        <div>
+          <h4 className="text-lg font-semibold mt-6 mb-4">
+            Similar games you may like:
+          </h4>
+          <div className="grid grid-cols-2 gap-4">
+            {similarGames.map((similarGame) => (
+              <div
+                key={similarGame.id}
+                className="bg-gray-100 p-4 rounded shadow"
+              >
+                <img
+                  src={similarGame.cover}
+                  alt={similarGame.name}
+                  className="w-full h-32 object-cover mb-2 rounded"
+                />
+                <h5 className="text-lg font-semibold">{similarGame.name}</h5>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
+
 export default GameCard;

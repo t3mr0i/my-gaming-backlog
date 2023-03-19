@@ -4,7 +4,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDahvjrOj4gDDL0cpWOhYI8iKlZBEgFeSE",
@@ -23,7 +23,7 @@ const app = firebase.initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const handleRegistration = async (email, password) => {
+const handleRegistration = async (auth, email, password) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,

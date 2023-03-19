@@ -14,5 +14,7 @@ export default async function handler(gameTitle) {
     cover: game.background_image,
     slug: game.slug,
   }));
+
+  console.log(games);
   return games;
 }

@@ -1,5 +1,8 @@
 import { useState } from "react";
 import handler from "../api/searchGame";
+import { collection, addDoc } from "firebase/firestore";
+import { db, auth } from "./firebase";
+
 function SearchGame() {
   const [searchResults, setSearchResults] = useState([]);
   const [gameTitle, setGameTitle] = useState("");
@@ -13,14 +16,21 @@ function SearchGame() {
 
   const addToBacklog = async (game) => {
     try {
-      const docRef = await addDoc(
-        collection(db, "backlogs", auth.currentUser.uid, "games"),
-        {
-          gameId: game.id,
-          gameName: game.name,
-          gamePlatform: game.platform,
-        }
+      const backlogRef = collection(
+        db,
+        "backlogs",
+        auth.currentUser.uid,
+        "games"
       );
+      console.log(backlogRef);
+      const docRef = await addDoc(backlogRef, {
+        gameId: game.id,
+        gameName: game.name,
+        metacritic: game.metacritic,
+        length: game.playtime
+          ? game.platforms.map((platform) => platform.name).join(", ")
+          : "Unknown Platform",
+      });
       console.log("Document written with ID: ", docRef.id);
     } catch (error) {
       console.error("Error adding game to backlog: ", error);
@@ -41,7 +51,8 @@ function SearchGame() {
         {searchResults &&
           searchResults.map((result) => (
             <li key={result.id}>
-              {result.name} -{""}- Metacritic: {result.metacritic} -{" "}
+              {result.name} -{""}- Metacritic: {result.metacritic} - PlayTime:{" "}
+              {result.playtime} -{" "}
               <button onClick={() => addToBacklog(result)}>
                 Add to backlog
               </button>
