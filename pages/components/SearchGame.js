@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { collection, addDoc } from "firebase/firestore";
-import { db, auth } from "../../firebase";
+import { db, auth } from "./firebase";
 
 const SearchGame = ({ onAddGame }) => {
   const [searchResults, setSearchResults] = useState([]);
