@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { auth, handleSubmit } from "../../firebase";
+import { auth, handleSubmit } from "./firebase";
 import Modal from "./Modal";
 import RegisterForm from "./RegisterForm";
 

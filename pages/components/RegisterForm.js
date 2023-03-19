@@ -1,23 +1,33 @@
-import React, { useState } from "react";
-import { auth } from "./firebase";
+import { useState } from "react";
+import { handleSubmit, auth } from "./firebase";
 
 const RegisterForm = ({ onClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
-  const handleSubmit = async (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    const success = await firebase(email, password);
-    if (success) {
+
+    // validate email format
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!emailRegex.test(email)) {
+      setError("Invalid email format");
+      return;
+    }
+
+    // handle registration
+    try {
+      const user = await handleSubmit(auth, email, password);
       onClose();
-    } else {
+    } catch (error) {
+      console.error(error);
       setError("Error registering user");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow">
+    <form onSubmit={handleFormSubmit} className="bg-white p-6 rounded shadow">
       <h2 className="text-xl font-semibold mb-4">Register</h2>
       {error && <p className="text-red-600 mb-4">{error}</p>}
       <input
