@@ -4,7 +4,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDahvjrOj4gDDL0cpWOhYI8iKlZBEgFeSE",
@@ -37,7 +37,7 @@ const handleRegistration = async (auth, email, password) => {
   }
 };
 
-const handleLogin = async (email, password) => {
+const handleLogin = async (auth, email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(
       auth,
@@ -51,4 +51,4 @@ const handleLogin = async (email, password) => {
   }
 };
 
-export { handleRegistration, handleLogin, db, auth };
+export { handleRegistration, handleLogin, app, db, auth };

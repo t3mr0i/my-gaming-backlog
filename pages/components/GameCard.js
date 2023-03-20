@@ -1,12 +1,13 @@
+import { collection, onSnapshot, query, getDocs } from "firebase/firestore";
+import { db, auth, app } from "./firebase";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { auth, db } from "./firebase"; // Import auth and db
 import StarRatings from "react-star-ratings";
 
 const GameCard = ({ game, onRemove }) => {
   const [rating, setRating] = useState(0);
   const [similarGames, setSimilarGames] = useState([]);
-
+  console.log(db);
   const changeRating = async (newRating) => {
     setRating(newRating);
     if (auth.currentUser) {
@@ -28,7 +29,7 @@ const GameCard = ({ game, onRemove }) => {
         setSimilarGames([]);
       }
     }
-  }; // Add missing closing curly brace
+  };
 
   return (
     <div className="bg-white p-6 mb-6 rounded shadow">

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { handleLogin } from "firebase/auth";
 import { auth } from "./firebase";
 const LoginForm = ({ onClose }) => {
   const [email, setEmail] = useState("");
@@ -11,7 +11,7 @@ const LoginForm = ({ onClose }) => {
 
     // handle login
     try {
-      const user = await signInWithEmailAndPassword(auth, email, password);
+      const user = await handleLogin(auth, email, password);
       onClose();
     } catch (error) {
       console.error(error);
