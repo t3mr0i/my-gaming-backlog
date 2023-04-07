@@ -14,7 +14,13 @@ export default async function handler(gameTitle) {
     cover: game.background_image,
     slug: game.slug,
     genres: game.genres.map((genre) => genre.name),
+    platforms: game.platforms.map((platform) => platform.platform.name),
+    popularityRating: game.rating,
+    releaseDate: game.released,
   }));
+
+  // Sort games by popularity rating in descending order
+  games.sort((a, b) => b.popularityRating - a.popularityRating);
 
   console.log(games);
   return games;

@@ -3,7 +3,8 @@ import { useRouter } from "next/router";
 import RegisterForm from "./RegisterForm";
 import LoginForm from "./LoginForm.js";
 import Modal from "./Modal";
-import GameLog from "../ressources/GameLog.png";
+import GameLog from "../ressources/GameLog-2.png";
+import Image from "next/image";
 
 const Heading = ({ user, handleLogout }) => {
   const [showRegisterForm, setShowRegisterForm] = useState(false);
@@ -27,13 +28,19 @@ const Heading = ({ user, handleLogout }) => {
 
   return (
     <>
-      <header className="header bg-blue-800 text-white py-4">
-        <div className="container mx-auto px-4 flex justify-between items-center">
+      <header className="header bg-blue-800 text-white">
+        <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center space-x-4">
-            <div className="w-10 h-10 bg-white rounded"></div>
-            <img src={GameLog.logo} alt="fireSpot" />
-            <h1 className="text-2xl font-semibold font-sans">GameLog </h1>
+            <Image
+              src={GameLog}
+              alt="GameLog"
+              width={80}
+              height={80}
+              className="align-middle"
+            />
+            <h1 className="text-2xl font-semibold font-sans">GameLog</h1>
           </div>
+
           <nav className="nav">
             {user ? (
               <div className="flex items-center space-x-4">

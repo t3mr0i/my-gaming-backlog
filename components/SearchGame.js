@@ -63,15 +63,18 @@ function SearchGame() {
       />
       <div className="relative mt-2">
         <div className="absolute z-10 bg-white w-full border border-gray-300 rounded">
-          {searchResults.map((result) => (
-            <SearchGameCard
-              key={result.id}
-              game={result}
-              onRemove={() => {}} // Pass an empty function for onRemove
-            />
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {searchResults.map((result) => (
+              <SearchGameCard
+                key={result.id}
+                game={result}
+                addToBacklog={addToBacklog}
+              />
+            ))}
+          </div>
         </div>
       </div>
+
       {showRatingModal && (
         <RatingModal
           game={selectedGame}
