@@ -6,6 +6,8 @@ import ActivityFeed from "./components/ActivityFeed";
 
 export default function Home() {
   const [backlog, setBacklog] = useState([]);
+  const [showLoginForm, setShowLoginForm] = useState(false);
+  const [showRegisterForm, setShowRegisterForm] = useState(false);
 
   const addGameToBacklog = (game) => {
     setBacklog([...backlog, game]);
@@ -15,8 +17,22 @@ export default function Home() {
     setBacklog(backlog.filter((game) => game.id !== gameId));
   };
 
+  const handleLoginButtonClick = () => {
+    setShowLoginForm(true);
+  };
+
+  const handleRegisterButtonClick = () => {
+    setShowRegisterForm(true);
+  };
+
   return (
     <div className="bg-gray-100 min-h-screen">
+      <Heading
+        showLoginForm={showLoginForm}
+        showRegisterForm={showRegisterForm}
+        handleLoginButtonClick={handleLoginButtonClick}
+        handleRegisterButtonClick={handleRegisterButtonClick}
+      />
       <Header />
       <main className="container mx-auto px-4 py-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

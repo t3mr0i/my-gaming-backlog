@@ -1,18 +1,15 @@
-import { useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { auth, handleLogin } from "./firebase";
+
 const LoginForm = ({ onClose }) => {
-  // state that stores the email and password
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // state that stores the error message
   const [error, setError] = useState(null);
 
-  // function that handles the login form submit
   const handleFormSubmit = useCallback(
     async (e) => {
       e.preventDefault();
 
-      // handle login
       try {
         const user = await handleLogin(auth, email, password);
         onClose();
@@ -21,9 +18,6 @@ const LoginForm = ({ onClose }) => {
         setError("Invalid email or password");
       }
     },
-    // pass the email and password variables to the useCallback hook
-    // to make sure that the handleFormSubmit function is not re-created
-    // every time the component re-renders
     [email, password, onClose]
   );
 

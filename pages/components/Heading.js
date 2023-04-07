@@ -1,25 +1,26 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
 import RegisterForm from "./RegisterForm";
 import LoginForm from "./LoginForm.js";
 import Modal from "./Modal";
 
-const Header = ({
-  user,
-  showLoginForm,
-  showRegisterForm,
-  handleLogout,
-  handleLoginButtonClick,
-  handleRegisterButtonClick,
-}) => {
-  const history = useHistory();
+const Heading = ({ user, handleLogout }) => {
+  const [showRegisterForm, setShowRegisterForm] = useState(false);
+  const [showLoginForm, setShowLoginForm] = useState(false);
+
+  const handleRegisterButtonClick = () => {
+    setShowRegisterForm(true);
+  };
+
+  const handleLoginButtonClick = () => {
+    setShowLoginForm(true);
+  };
 
   const handleCloseRegisterForm = () => {
-    history.push("/");
+    setShowRegisterForm(false);
   };
 
   const handleCloseLoginForm = () => {
-    history.push("/");
+    setShowLoginForm(false);
   };
 
   return (
@@ -31,19 +32,23 @@ const Header = ({
           </h1>
           <nav className="nav">
             {user ? (
-              <button onClick={handleLogout} className="hover:underline">
-                Logout
-              </button>
+              <div className="flex items-center">
+                <span className="mr-4 text-sm text-gray-200">{user.email}</span>
+                <button onClick={handleLogout} className="hover:underline">
+                  Logout
+                </button>
+              </div>
             ) : (
-              <>
+              <div className="flex items-center">
                 <button
                   onClick={handleRegisterButtonClick}
-                  className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-300 font-sans mr-2"
+                  className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-300
+                  font-sans mr-2"
                 >
                   Register
                 </button>
                 <button onClick={handleLoginButtonClick}>Login</button>
-              </>
+              </div>
             )}
           </nav>
         </div>
@@ -62,4 +67,4 @@ const Header = ({
   );
 };
 
-export default Header;
+export default Heading;
