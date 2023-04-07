@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { auth } from "../components/firebase";
 import Layout from "../components/Layout";
-import SearchBar from "../components/SearchBar";
+import SearchBar from "../components/SearchGame";
 import BacklogList from "../components/BacklogList";
 import ActivityFeed from "../components/ActivityFeed";
 

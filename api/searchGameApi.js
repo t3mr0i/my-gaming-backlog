@@ -13,6 +13,7 @@ export default async function handler(gameTitle) {
     metacritic: game.metacritic,
     cover: game.background_image,
     slug: game.slug,
+    genres: game.genres.map((genre) => genre.name),
   }));
 
   console.log(games);
