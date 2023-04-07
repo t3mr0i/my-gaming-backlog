@@ -1,5 +1,5 @@
 import { collection, onSnapshot, query, getDocs } from "firebase/firestore";
-import { db, auth } from "./firebase";
+import { db, auth, doc, deleteDoc } from "./firebase";
 import React, { useEffect, useState } from "react";
 import GameCard from "./GameCard";
 
@@ -20,7 +20,18 @@ const BacklogList = ({ onRemoveGame }) => {
       setBacklog(games);
     }
   };
-
+  const handleRemove = async (gameToRemove) => {
+    // Remove the game from the Firebase collection
+    try {
+      await deleteDoc(
+        doc(db, "backlogs", auth.currentUser.uid, "games", gameToRemove.id)
+      );
+      // Update the local backlog state
+      setBacklog(backlog.filter((game) => game.id !== gameToRemove.id));
+    } catch (error) {
+      console.error("Error removing game: ", error);
+    }
+  };
   useEffect(() => {
     // Fetch backlog data whenever authentication state changes
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -37,9 +48,9 @@ const BacklogList = ({ onRemoveGame }) => {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">My Backlog</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {backlog.map((game) => (
-          <GameCard key={game.id} game={game} onRemove={onRemoveGame} />
+          <GameCard key={game.id} game={game} onRemove={handleRemove} />
         ))}
       </div>
     </div>

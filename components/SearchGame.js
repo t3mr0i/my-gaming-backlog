@@ -1,5 +1,5 @@
 import { useState } from "react";
-import handler from "../pages/api/searchGameApi";
+import handler from "../api/searchGameApi";
 import { collection, addDoc } from "firebase/firestore";
 import { db, auth } from "./firebase";
 import RatingModal from "./RatingModal";

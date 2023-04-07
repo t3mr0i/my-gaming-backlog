@@ -5,7 +5,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-
+import { doc, deleteDoc } from "firebase/firestore";
 const firebaseConfig = {
   apiKey: "AIzaSyDahvjrOj4gDDL0cpWOhYI8iKlZBEgFeSE",
   authDomain: "videogamerecommendator.firebaseapp.com",
@@ -51,4 +51,4 @@ const handleLogin = async (auth, email, password) => {
   }
 };
 
-export { handleRegistration, handleLogin, app, db, auth };
+export { handleRegistration, handleLogin, app, db, auth, doc, deleteDoc };
