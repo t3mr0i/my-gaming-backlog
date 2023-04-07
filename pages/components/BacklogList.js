@@ -5,16 +5,12 @@ import GameCard from "./GameCard";
 
 const BacklogList = ({ onRemoveGame }) => {
   const [backlog, setBacklog] = useState([]);
-
   const fetchBacklogData = async () => {
     if (auth.currentUser) {
-      const q = query(
+      const querySnapshot = await getDocs(
         collection(db, "backlogs", auth.currentUser.uid, "games")
       );
-
-      const querySnapshot = await getDocs(q);
       const games = [];
-
       querySnapshot.forEach((doc) => {
         games.push({
           id: doc.id,
@@ -41,9 +37,11 @@ const BacklogList = ({ onRemoveGame }) => {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">My Backlog</h2>
-      {backlog.map((game) => (
-        <GameCard key={game.id} game={game} onRemove={onRemoveGame} />
-      ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {backlog.map((game) => (
+          <GameCard key={game.id} game={game} onRemove={onRemoveGame} />
+        ))}
+      </div>
     </div>
   );
 };

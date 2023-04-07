@@ -1,56 +1,35 @@
-import React, { useEffect, useState } from "react";
-import { auth, handleSubmit } from "./firebase";
-import Modal from "./Modal";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import RegisterForm from "./RegisterForm";
-import LoginForm from "./LoginForm.js"; // import LoginForm component
+import LoginForm from "./LoginForm.js";
+import Modal from "./Modal";
 
-const Header = () => {
-  const [user, setUser] = useState(null);
-  const [showRegisterForm, setShowRegisterForm] = useState(false);
-  const [showLoginForm, setShowLoginForm] = useState(false); // Add state for login form
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((authUser) => {
-      if (authUser) {
-        setUser(authUser);
-      } else {
-        setUser(null);
-      }
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-
-  const handleLogout = () => {
-    auth.signOut();
-  };
-
-  const handleRegisterButtonClick = () => {
-    setShowRegisterForm(true);
-  };
+const Header = ({
+  user,
+  showLoginForm,
+  showRegisterForm,
+  handleLogout,
+  handleLoginButtonClick,
+  handleRegisterButtonClick,
+}) => {
+  const history = useHistory();
 
   const handleCloseRegisterForm = () => {
-    setShowRegisterForm(false);
-  };
-
-  const handleLoginButtonClick = () => {
-    setShowLoginForm(true);
+    history.push("/");
   };
 
   const handleCloseLoginForm = () => {
-    setShowLoginForm(false);
+    history.push("/");
   };
 
   return (
     <>
-      <header className="bg-blue-800 text-white py-4">
+      <header className="header bg-blue-800 text-white py-4">
         <div className="container mx-auto px-4 flex justify-between items-center">
           <h1 className="text-2xl font-semibold font-sans">
             My Gaming Backlog
           </h1>
-          <div>
+          <nav className="nav">
             {user ? (
               <button onClick={handleLogout} className="hover:underline">
                 Logout
@@ -66,7 +45,7 @@ const Header = () => {
                 <button onClick={handleLoginButtonClick}>Login</button>
               </>
             )}
-          </div>
+          </nav>
         </div>
       </header>
       {showRegisterForm && (
