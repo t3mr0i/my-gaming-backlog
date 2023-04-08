@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import BacklogList from "./components/BacklogList";
 import SearchGame from "./components/SearchGame";
 import Header from "./components/Header";
-import ActivityFeed from "./components/ActivityFeed";
 
 export default function Home() {
   const [backlog, setBacklog] = useState([]);
@@ -39,9 +38,7 @@ export default function Home() {
           <h1 className="text-4xl font-bold mb-4">My Gaming Backlog</h1>
           <SearchGame onAddGame={addGameToBacklog} />
           <BacklogList backlog={backlog} onRemoveGame={removeGameFromBacklog} />
-          <div className="col-span-1">
-            <ActivityFeed />
-          </div>
+          <div className="col-span-1"></div>
         </div>
       </main>
     </div>

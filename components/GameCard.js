@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import StarRatings from "react-star-ratings";
 import Switch from "react-switch";
+import Image from "next/image";
 
 const GameCard = ({ game, onRemove }) => {
   const [rating, setRating] = useState(game.rating || 0);
@@ -66,10 +67,13 @@ const GameCard = ({ game, onRemove }) => {
       }`}
     >
       <div className="w-full h-48 overflow-hidden">
-        <img
-          className="w-full h-full object-cover"
+        <Image
+          layout="responsive"
+          objectFit="cover"
           src={game.cover}
           alt={game.name}
+          width={1}
+          height={1}
         />
       </div>
       <div className="flex-grow px-6 py-4 flex flex-col">
@@ -146,9 +150,6 @@ const GameCard = ({ game, onRemove }) => {
         </div>
       </div>
       <div className="px-6 pt-4 pb-2">
-        <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-          Metacritic: {game.metacritic}
-        </span>
         {game.genres &&
           game.genres.map((genre, index) => (
             <span
@@ -160,7 +161,7 @@ const GameCard = ({ game, onRemove }) => {
           ))}
         <div className="mt-auto">
           <button
-            className="bg-red-500  text-white rounded py-2 px-4"
+            className="bg-red-500  text-white rounded py-2 px-4 "
             onClick={() => onRemove(game)}
           >
             Remove from backlog
@@ -178,9 +179,11 @@ const GameCard = ({ game, onRemove }) => {
                 key={similarGame.id}
                 className="bg-gray-100 p-4 rounded shadow"
               >
-                <img
+                <Image
                   src={similarGame.cover}
                   alt={similarGame.name}
+                  width={1}
+                  height={1}
                   className="w-full object-cover rounded mb-4 h-32"
                 />
                 <h5 className="text-lg font-semibold">{similarGame.name}</h5>

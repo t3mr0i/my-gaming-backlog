@@ -28,8 +28,8 @@ const Heading = ({ user, handleLogout }) => {
 
   return (
     <>
-      <header className="header bg-blue-800 text-white">
-        <div className="container mx-auto flex justify-between items-center">
+      <header className="header bg-blue-800 text-white py-2">
+        <div className="container mx-auto px-4 flex justify-between items-center">
           <div className="flex items-center space-x-4">
             <Image
               src={GameLog}

@@ -1,74 +1,71 @@
-import React from "react";
-import { getMetacriticColor } from "./helpers";
+import React, { useState } from "react";
 
-const SearchGameCard = ({ game, onRemove }) => {
-  // Extract the year from the release date
-  const releaseYear = game.releaseDate
-    ? new Date(game.releaseDate).getFullYear()
-    : "Unknown";
-
-  const metacriticColor = getMetacriticColor(game.metacritic);
-
-  const MetacriticScore = () => {
-    if (game.metacritic >= 90) {
-      return (
-        <div className={`star ${metacriticColor} text-white text-center`}>
-          {game.metacritic}
-        </div>
-      );
-    } else {
-      return (
-        <div className={`rounded-md ${metacriticColor} text-white text-center`}>
-          {game.metacritic}
-        </div>
-      );
-    }
-  };
+const SearchGameCard = ({
+  game,
+  addToBacklog,
+  removeFromBacklog,
+  isInBacklog,
+}) => {
+  // ...rest of the code
 
   return (
-    <div className="bg-white p-4 border border-gray-300 rounded">
-      <div className="flex">
-        <div className="mr-4">
-          <img
-            src={game.cover}
-            alt={`Cover art for ${game.name}`}
-            className="rounded w-28 h-28"
-          />
+    <div
+      className="w-64 max-w-md bg-white border border-gray-200 rounded-lg shadow-lg my-4 transition-all duration-300 ease-in-out transform hover:-translate-y-2 hover:scale-110 flex flex-col"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div className="w-full h-40 overflow-hidden relative">
+        <img
+          src={game.cover}
+          alt={game.title}
+          className="w-full h-full object-cover"
+        />
+        <div
+          className={`rounded-full w-10 h-10 flex items-center justify-center absolute top-0 right-2 text-white font-bold text-lg ${getScoreColor(
+            game.metacritic
+          )}`}
+        >
+          {game.metacritic}
         </div>
-        <div className="flex flex-col justify-between">
-          <div>
-            <h3 className="text-lg font-bold">{game.name}</h3>
-            <p className="text-sm">{releaseYear}</p>
-            <div className="mt-2">
-              {game.genres.map((genre, index) => (
-                <span
-                  key={index}
-                  className="text-xs bg-gray-200 p-1 rounded mr-1"
-                >
-                  {genre}
-                </span>
-              ))}
-            </div>
-            <div className="mt-2">
-              {game.platforms.map((platform, index) => (
-                <span
-                  key={index}
-                  className="text-xs bg-gray-200 p-1 rounded mr-1"
-                >
-                  {platform}
-                </span>
-              ))}
-            </div>
+        {showGenres && (
+          <div className="absolute bottom-0 left-0 bg-black bg-opacity-50 text-white text-xs p-2">
+            {game.genres.join(", ")}
           </div>
-          <div className="flex items-center mt-4">
-            <button
-              className="bg-blue-500 text-white px-4 py-1 rounded mr-2"
-              onClick={() => addToBacklog(game)}
+        )}
+      </div>
+      <div className="flex-grow px-6 py-4 flex flex-col">
+        <h2 className="text-xl font-semibold">{game.title}</h2>
+        <div className="text-sm text-gray-700 mt-2">
+          <span className="font-semibold">Release Year:</span>{" "}
+          {new Date(game.releaseDate).getFullYear()}
+        </div>
+        <div className="text-sm text-gray-700 mt-2">
+          <span className="font-semibold">Platforms:</span>{" "}
+          {game.platforms.slice(0, 4).map((platform, index) => (
+            <span
+              key={index}
+              className="bg-gray-200 text-gray-700 rounded px-2 py-1 text-xs inline-block ml-2"
             >
-              Add to backlog
-            </button>
-            {game.metacritic && <MetacriticScore />}
-          </div>
+              {translatePlatform(platform)}
+            </span>
+          ))}
+          {game.platforms.length > 4 && (
+            <span className="text-xs text-gray-700 ml-1">+ more</span>
+          )}
+        </div>
+        <div className="mt-auto">
+          <button
+            className={`${
+              isAdded
+                ? isHovering
+                  ? "bg-red-500"
+                  : "bg-green-500"
+                : "bg-blue-500"
+            } text-white px-4 py-1 rounded mr-2 transition-colors duration-300`}
+            onClick={handleClick}
+          >
+            {isAdded ? (isHovering ? "Remove" : "Added") : "Add to backlog"}
+          </button>
         </div>
       </div>
     </div>

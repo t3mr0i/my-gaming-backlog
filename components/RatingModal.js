@@ -1,15 +1,20 @@
 import React from "react";
 import Modal from "./Modal";
+import Image from "next/image";
 
 const RatingModal = ({ game, onClose, addToBacklog }) => {
   return (
     <Modal onClose={onClose}>
       <div className="text-center">
         <h3 className="text-xl font-semibold mb-4">Rate and Add to Backlog</h3>
-        <img
-          className="h-40 w-40 object-cover mx-auto mb-4 rounded"
+        <Image
+          layout="responsive"
+          objectFit="cover"
           src={game.cover}
           alt={game.name}
+          width={1}
+          height={1}
+          className="rounded"
         />
         <h4 className="text-lg font-bold mb-4">{game.name}</h4>
         {/* Implement rating logic here */}
