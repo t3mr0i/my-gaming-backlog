@@ -6,11 +6,45 @@ const SearchGameCard = ({
   removeFromBacklog,
   isInBacklog,
 }) => {
-  // ...rest of the code
+  const [isAdded, setIsAdded] = useState(isInBacklog);
+  const [isHovering, setIsHovering] = useState(false);
+  const [showGenres, setShowGenres] = useState(false);
+
+  const getScoreColor = (score) => {
+    if (score >= 90) return "bg-green-700";
+    if (score >= 75) return "bg-green-500";
+    if (score >= 50) return "bg-yellow-400";
+    return "bg-red-500";
+  };
+
+  const translatePlatform = (platform) => {
+    return platform.replace("PlayStation", "PS");
+  };
+
+  const handleClick = () => {
+    if (isAdded) {
+      removeFromBacklog(game);
+    } else {
+      addToBacklog(game);
+    }
+    setIsAdded(!isAdded);
+  };
+
+  const handleMouseEnter = () => {
+    if (isAdded) {
+      setIsHovering(true);
+    }
+    setShowGenres(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovering(false);
+    setShowGenres(false);
+  };
 
   return (
     <div
-      className="w-64 max-w-md bg-white border border-gray-200 rounded-lg shadow-lg my-4 transition-all duration-300 ease-in-out transform hover:-translate-y-2 hover:scale-110 flex flex-col"
+      className="w-56 max-w-md bg-white border border-gray-200 rounded-lg shadow-lg my-4 transition-all duration-300 ease-in-out transform hover:-translate-y-2 hover:scale-110 flex flex-col"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -21,7 +55,7 @@ const SearchGameCard = ({
           className="w-full h-full object-cover"
         />
         <div
-          className={`rounded-full w-10 h-10 flex items-center justify-center absolute top-0 right-2 text-white font-bold text-lg ${getScoreColor(
+          className={`rounded-full w-10 h-10 flex items-center justify-center absolute top-2 right-2 text-white font-bold text-lg ${getScoreColor(
             game.metacritic
           )}`}
         >

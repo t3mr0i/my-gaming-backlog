@@ -66,14 +66,14 @@ const GameCard = ({ game, onRemove }) => {
         activelyPlaying ? "bg-green-100" : ""
       }`}
     >
-      <div className="w-full h-48 overflow-hidden">
+      <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
         <Image
-          layout="responsive"
-          objectFit="cover"
           src={game.cover}
           alt={game.name}
-          width={1}
-          height={1}
+          layout="fill"
+          objectFit="cover"
+          objectPosition="center"
+          className="absolute top-0 left-0 w-full h-full rounded-t-lg"
         />
       </div>
       <div className="flex-grow px-6 py-4 flex flex-col">
@@ -182,9 +182,11 @@ const GameCard = ({ game, onRemove }) => {
                 <Image
                   src={similarGame.cover}
                   alt={similarGame.name}
-                  width={1}
-                  height={1}
-                  className="w-full object-cover rounded mb-4 h-32"
+                  width={150}
+                  height={100}
+                  objectFit="cover"
+                  objectPosition="center"
+                  className="w-full rounded mb-4"
                 />
                 <h5 className="text-lg font-semibold">{similarGame.name}</h5>
               </div>
