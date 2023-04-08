@@ -1,21 +1,50 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import handler from "../api/searchGameApi";
-import { collection, addDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  query,
+  where,
+} from "firebase/firestore";
 import { db, auth } from "./firebase";
 import RatingModal from "./RatingModal";
 import SearchGameCard from "./SearchGameCard";
 
 function SearchGame() {
   const [searchResults, setSearchResults] = useState([]);
-  const [gameTitle, setGameTitle] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [selectedGame, setSelectedGame] = useState(null);
+  const [userBacklog, setUserBacklog] = useState([]);
 
   const searchGameHandler = async (e) => {
     e.preventDefault();
-
-    const results = await handler(gameTitle);
+    const results = await handler(searchInput);
     setSearchResults(results);
+  };
+
+  const removeFromBacklog = async (game) => {
+    try {
+      const backlogRef = collection(
+        db,
+        "backlogs",
+        auth.currentUser.uid,
+        "games"
+      );
+
+      const q = query(backlogRef, where("gameId", "==", game.id));
+
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        deleteDoc(doc.ref);
+      });
+
+      console.log("Game removed from backlog");
+    } catch (error) {
+      console.error("Error removing game from backlog: ", error);
+    }
   };
 
   const addToBacklog = async (game) => {
@@ -26,7 +55,6 @@ function SearchGame() {
         auth.currentUser.uid,
         "games"
       );
-      console.log(backlogRef);
       const docRef = await addDoc(backlogRef, {
         gameId: game.id,
         gameName: game.name,
@@ -43,6 +71,14 @@ function SearchGame() {
     }
   };
 
+  useEffect(() => {
+    const fetchUserBacklog = async () => {
+      // Fetch user's backlog here and store it in the setUserBacklog
+    };
+
+    fetchUserBacklog();
+  }, []);
+
   const openRatingModal = (game) => {
     setSelectedGame(game);
     setShowRatingModal(true);
@@ -56,8 +92,8 @@ function SearchGame() {
     <form onSubmit={searchGameHandler} className="mb-6">
       <input
         type="text"
-        value={gameTitle}
-        onChange={(e) => setGameTitle(e.target.value)}
+        value={searchInput}
+        onChange={(e) => setSearchInput(e.target.value)}
         placeholder="Search for a game"
         className="border border-gray-300 p-2 rounded w-full"
       />
@@ -69,6 +105,10 @@ function SearchGame() {
                 key={result.id}
                 game={result}
                 addToBacklog={addToBacklog}
+                removeFromBacklog={removeFromBacklog}
+                isInBacklog={userBacklog.some(
+                  (backlogGame) => backlogGame.gameId === result.id
+                )}
               />
             ))}
           </div>
