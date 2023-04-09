@@ -12,10 +12,12 @@ const BacklogList = ({ onRemoveGame }) => {
       );
       const games = [];
       querySnapshot.forEach((doc) => {
-        games.push({
+        const gameData = {
           id: doc.id,
+          name: doc.data().gameName, // Map the gameName key to the name key
           ...doc.data(),
-        });
+        };
+        games.push(gameData);
       });
       setBacklog(games);
     }
