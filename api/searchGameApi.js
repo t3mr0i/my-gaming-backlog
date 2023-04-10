@@ -14,7 +14,9 @@ export default async function handler(gameTitle) {
     cover: game.background_image,
     slug: game.slug,
     genres: game.genres.map((genre) => genre.name),
-    platforms: game.platforms.map((platform) => platform.platform.name),
+    platforms: game.platforms
+      ? game.platforms.map((platform) => platform.platform.name)
+      : [],
     popularityRating: game.rating,
     releaseDate: game.released,
   }));

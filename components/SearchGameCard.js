@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Image from "next/image";
 
 const SearchGameCard = ({
   game,
@@ -18,6 +19,7 @@ const SearchGameCard = ({
   };
 
   const translatePlatform = (platform) => {
+    if (!platform) return null;
     return platform.replace("PlayStation", "PS");
   };
 
@@ -51,11 +53,21 @@ const SearchGameCard = ({
       <div className="w-full h-40 overflow-hidden relative">
         <img
           src={game.cover}
-          alt={game.title}
-          className="w-full h-full object-cover"
+          alt={game.name}
+          layout="fill"
+          objectFit="cover"
+          objectPosition="center"
+          className="absolute top-0 left-0 w-full h-full rounded-t-lg"
         />
+        <div className="absolute bottom-0 left-0 bg-black bg-opacity-50 text-white text-xs p-2">
+          <h3 className="text-lg font-bold">{game.title}</h3>
+          <div className="text-sm">
+            <span className="font-semibold">{game.name}</span>{" "}
+          </div>
+        </div>
+
         <div
-          className={`rounded-full w-10 h-10 flex items-center justify-center absolute top-2 right-2 text-white font-bold text-lg ${getScoreColor(
+          className={`rounded-full w-10 mx-2 my-2 h-10 flex items-center justify-center absolute top-2 left-auto right-2 text-white font-bold text-lg ${getScoreColor(
             game.metacritic
           )}`}
         >

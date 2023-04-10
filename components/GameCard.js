@@ -81,7 +81,7 @@ const GameCard = ({ game, onRemove }) => {
     } catch (error) {
       console.error("Error analyzing game attributes: ", error);
     } finally {
-      setLoadingAnalysis(false);
+      // setLoadingAnalysis(false);
     }
   };
 
@@ -167,6 +167,7 @@ const GameCard = ({ game, onRemove }) => {
   }, [isFlipped, dataFetched]);
 
   useEffect(() => {}, [isFlipped, dataFetched, gameTags]);
+
   return (
     <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
       {/* Front side of the card */}
