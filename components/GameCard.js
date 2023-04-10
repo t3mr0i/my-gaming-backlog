@@ -4,36 +4,84 @@ import Image from "next/image";
 import StarRatings from "react-star-ratings";
 import Switch from "react-switch";
 import ReactCardFlip from "react-card-flip";
-import { CircularProgress } from "@material-ui/core";
-import "@material-ui/core/styles";
-
-import { getSteamId, getTagsAndReviews } from "../lib/steam";
-import { analyzeGameAttributes } from "../lib/openAi";
+import CircularProgress from "@mui/material/CircularProgress";
+import "@mui/material/styles";
+import { analyzeGameAttributes } from "../pages/api/analyzeGameAttributes";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { getReviews, getSteamId, getTagsAndReviews } from "../lib/steam";
 import { db, auth, doc } from "./firebase";
 import { updateDoc } from "firebase/firestore";
+import { analyzeReviews } from "../lib/openAi";
 
 const GameCard = ({ game, onRemove }) => {
+  const [user] = useAuthState(auth); // Add this line
+
   const [rating, setRating] = useState(game.rating || 0);
-  const [similarGames, setSimilarGames] = useState([]);
   const [hoursSpent, setHoursSpent] = useState(game.hoursSpent || 0);
   const [softFeatures, setSoftFeatures] = useState("");
   const [isFlipped, setIsFlipped] = useState(false);
   const [dataFetched, setDataFetched] = useState(false);
   const [loadingTags, setLoadingTags] = useState(false);
   const [gameTags, setGameTags] = useState([]);
-
+  const [reviews, setReviews] = useState([]);
+  if (!user) {
+    return <div>Loading...</div>;
+  }
   const [estimatedProgress, setEstimatedProgress] = useState(
     game.estimatedProgress || 0
   );
   const [activelyPlaying, setActivelyPlaying] = useState(
     game.activelyPlaying || false
   );
-  const fetchSoftFeatures = async () => {
-    const steamId = await getSteamId(game.name);
-    if (steamId) {
-      const { tags, reviews } = await getTagsAndReviews(steamId);
-      const features = await analyzeGameAttributes(tags, reviews);
-      setSoftFeatures(features);
+  async function fetchSoftFeatures(tags, reviews) {
+    try {
+      const { data } = await axios.post("/api/analyzeGameAttributes", {
+        tags,
+        reviews,
+      });
+      return data.softFeatures;
+    } catch (error) {
+      console.error("Error fetching soft features: ", error);
+      return "";
+    }
+  }
+
+  const fetchAndAnalyzeReviews = async (gameName) => {
+    try {
+      const steamId = await getSteamId(gameName);
+      const fetchedReviews = await getReviews(steamId);
+      console.log(steamId);
+
+      if (fetchedReviews) {
+        console.log("in if");
+        const tags = await analyzeReviews(fetchedReviews);
+        console.log("Tags:", tags);
+        setGameTags(tags);
+        setReviews(fetchedReviews); // Update the state with the fetched reviews
+      }
+    } catch (error) {
+      console.error("Error fetching and analyzing reviews:", error.message);
+    }
+  };
+  const analyzeAttributes = async () => {
+    //setLoadingAnalysis(true);
+    try {
+      const res = await fetch("/api/analyzeGameAttributes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tags: gameTags || [], // Ensure that this is an array
+          reviews: reviews || [], // Updated line
+        }),
+      });
+      const data = await res.json();
+      setSoftFeatures(data.softFeatures);
+    } catch (error) {
+      console.error("Error analyzing game attributes: ", error);
+    } finally {
+      setLoadingAnalysis(false);
     }
   };
 
@@ -43,21 +91,25 @@ const GameCard = ({ game, onRemove }) => {
       return;
     }
 
-    const steamId = await getSteamId(game.name);
-    if (steamId) {
-      const { tags, reviews } = await getTagsAndReviews(steamId);
-      setGameTags(tags);
-      setReviews(reviews);
-    }
-  };
+    setLoadingTags(true); // Set loadingTags to true at the beginning of the function
 
+    await fetchAndAnalyzeReviews(game.name); // Remove the unnecessary lines
+
+    setLoadingTags(false); // Set loadingTags to false at the end of the function
+  };
   useEffect(() => {
-    fetchSoftFeatures();
     setRating(game.rating || 0);
     setHoursSpent(game.hoursSpent || 0);
     setEstimatedProgress(game.estimatedProgress || 0);
     setActivelyPlaying(game.activelyPlaying || false);
   }, [game]);
+
+  useEffect(() => {
+    if (isFlipped && !dataFetched) {
+      fetchGameTags();
+      setDataFetched(true);
+    }
+  }, [isFlipped, dataFetched]);
 
   const updateGameInfo = async (field, value) => {
     try {
@@ -93,20 +145,28 @@ const GameCard = ({ game, onRemove }) => {
     setActivelyPlaying(checked);
     updateGameInfo("activelyPlaying", checked);
   };
-
   const handleFlip = () => {
     setIsFlipped(!isFlipped);
-    if (!isFlipped) {
+    if (!dataFetched) {
       fetchGameTags();
+      setDataFetched(true);
     }
   };
 
   useEffect(() => {
+    if (isFlipped && dataFetched && gameTags.length > 0 && reviews.length > 0) {
+      analyzeAttributes();
+    }
+  }, [isFlipped, dataFetched, gameTags, reviews]);
+
+  useEffect(() => {
     if (isFlipped && !dataFetched) {
-      fetchSoftFeatures();
+      fetchGameTags();
       setDataFetched(true);
     }
-  }, [isFlipped]);
+  }, [isFlipped, dataFetched]);
+
+  useEffect(() => {}, [isFlipped, dataFetched, gameTags]);
   return (
     <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
       {/* Front side of the card */}
